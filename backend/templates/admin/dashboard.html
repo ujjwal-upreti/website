@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Dashboard</h2>
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card text-bg-dark"><div class="card-body"><h5>Products</h5><h2>{{ total_products }}</h2></div></div></div>
+    <div class="col-md-3"><div class="card text-bg-success"><div class="card-body"><h5>Orders</h5><h2>{{ total_orders }}</h2></div></div></div>
+    <div class="col-md-3"><div class="card text-bg-info"><div class="card-body"><h5>Customers</h5><h2>{{ total_users }}</h2></div></div></div>
+    <div class="col-md-3"><div class="card text-bg-warning"><div class="card-body"><h5>Revenue</h5><h2>Rs. {{ "%.0f"|format(revenue) }}</h2></div></div></div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Recent Orders</h4>
+        <ul class="list-group">
+            {% for o in recent_orders %}
+            <li class="list-group-item d-flex justify-content-between">
+                <span>{{ o.order_number }} – {{ o.status }}</span>
+                <span>Rs. {{ "%.2f"|format(o.total_amount) }}</span>
+            </li>
+            {% else %}
+            <li class="list-group-item text-muted">No orders</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h4>Last 7 Days Sales</h4>
+        <ul class="list-group">
+            {% for d in daily %}
+            <li class="list-group-item d-flex justify-content-between">
+                <span>{{ d.date }}</span><span>Rs. {{ "%.2f"|format(d.amount) }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div class="mt-4 d-flex gap-2 flex-wrap">
+    <a href="{{ url_for('admin.manage_products') }}" class="btn btn-outline-dark">Manage Products</a>
+    <a href="{{ url_for('admin.manage_orders') }}" class="btn btn-outline-dark">Manage Orders</a>
+    {% if current_user.role == 'admin' %}
+    <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline-dark">Manage Users</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}About – SneakerStore{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h1>About SneakerStore</h1>
+        <p class="lead">This project implements the exact Use Case Diagram and Level-1 DFD you provided for a Shoe / Sneaker E-Commerce System.</p>
+        <p>Roles (Customer, Shopkeeper, Staff, Admin), processes (1.0–8.0), and data stores (D1–D6) are fully mapped into working Flask code.</p>
+        <hr>
+        <h4>System Roles</h4>
+        <ul>
+            <li><strong>Customer</strong> – View shoes, Add to cart, Place order, Make payment, Generate invoice, Profile</li>
+            <li><strong>Shopkeeper</strong> – Add stock, Check daily sales report</li>
+            <li><strong>Staff</strong> – Manage product, payment, customer (no admin rights)</li>
+            <li><strong>Admin</strong> – Manage users and full application</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

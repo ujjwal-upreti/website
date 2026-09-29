@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Contact Us — Sneaky Point{% endblock %}
+{% block content %}
+<section class="contact-page">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-5 reveal">
+        <div class="section-kicker">Get in touch</div>
+        <h1 class="section-title mb-3">Contact Sneaky Point.</h1>
+        <p class="section-muted mb-4">Have a question about a pair, an order, sizing, or a return? Send us a message and our team will get back to you.</p>
+        <div class="row g-3">
+          <div class="col-12"><div class="contact-card"><div class="contact-icon"><i class="bi bi-envelope"></i></div><h3>Email</h3><p class="section-muted mb-0">support@sneakypoint.com</p></div></div>
+          <div class="col-12"><div class="contact-card"><div class="contact-icon"><i class="bi bi-telephone"></i></div><h3>Phone</h3><p class="section-muted mb-0">+977 9800000000</p></div></div>
+          <div class="col-12"><div class="contact-card"><div class="contact-icon"><i class="bi bi-geo-alt"></i></div><h3>Store</h3><p class="section-muted mb-0">Kathmandu, Nepal</p></div></div>
+        </div>
+      </div>
+      <div class="col-lg-7 reveal">
+        <div class="contact-card contact-form">
+          <h2 class="section-title fs-2 mb-4">Send us a message</h2>
+          <form method="post" action="#">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="row g-3">
+              <div class="col-md-6"><label class="form-label">Name</label><input class="form-control" name="name" required></div>
+              <div class="col-md-6"><label class="form-label">Email</label><input class="form-control" type="email" name="email" required></div>
+              <div class="col-12"><label class="form-label">Subject</label><input class="form-control" name="subject" required></div>
+              <div class="col-12"><label class="form-label">Message</label><textarea class="form-control" name="message" required></textarea></div>
+              <div class="col-12"><button class="btn btn-sp px-4" type="submit">Send Message <i class="bi bi-arrow-right ms-1"></i></button></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

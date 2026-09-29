@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Shop — Sneaky Point{% endblock %}
+
+{% block content %}
+<section class="shop-header">
+    <div class="container">
+        <div class="section-kicker">The collection</div>
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
+            <div>
+                <h1 class="section-title mb-2">Find your next pair.</h1>
+                <p class="section-muted mb-0">Browse the Sneaky Point sneaker collection.</p>
+            </div>
+            <span class="section-muted small">{{ pagination.total }} pair{% if pagination.total != 1 %}s{% endif %}</span>
+        </div>
+    </div>
+</section>
+
+<div class="container pb-5">
+    <form class="filter-panel" method="get">
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-lg-4">
+                <label class="filter-label">Search</label>
+                <input class="form-control" type="search" name="q" value="{{ current_q or '' }}" placeholder="Search sneakers...">
+            </div>
+            <div class="col-6 col-lg-2">
+                <label class="filter-label">Category</label>
+                <select class="form-select" name="category">
+                    <option value="">All</option>
+                    {% for category in categories %}
+                    <option value="{{ category.slug }}" {% if current_category == category.slug %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-6 col-lg-2">
+                <label class="filter-label">Brand</label>
+                <select class="form-select" name="brand">
+                    <option value="">All</option>
+                    {% for brand in brands %}
+                    <option value="{{ brand.slug }}" {% if current_brand == brand.slug %}selected{% endif %}>{{ brand.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-6 col-lg-2">
+                <label class="filter-label">Size</label>
+                <select class="form-select" name="size">
+                    <option value="">All</option>
+                    {% for size_option in ['6','7','8','9','10','11','12'] %}
+                    <option value="{{ size_option }}" {% if current_size == size_option %}selected{% endif %}>{{ size_option }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-6 col-lg-2">
+                <button class="btn btn-sp w-100" type="submit">Filter <i class="bi bi-sliders ms-1"></i></button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-12 col-sm-6 col-lg-4 reveal">
+            <article class="product-card">
+                <div class="product-image-wrapper">
+                    {% if product.stock <= 0 %}
+                    <span class="product-badge">Sold out</span>
+                    {% elif loop.index <= 3 and pagination.page == 1 %}
+                    <span class="product-badge">Popular</span>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                    <button class="wishlist-btn {% if product.id in wishlist_ids %}active{% endif %}" type="button" data-wishlist-url="{{ url_for('wishlist.toggle', product_id=product.id) }}" aria-label="Toggle {{ product.name }} wishlist"><i class="bi {% if product.id in wishlist_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i></button>
+                    {% else %}
+                    <a class="wishlist-btn" href="{{ url_for('auth.login') }}" aria-label="Log in to save {{ product.name }}"><i class="bi bi-heart"></i></a>
+                    {% endif %}
+                    <a href="{{ url_for('products.detail', slug=product.slug) }}">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy">
+                    </a>
+                </div>
+                <div class="product-body">
+                    <div class="product-brand">{{ product.brand.name }}</div>
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-meta">Size {{ product.size }} · {{ product.color }}</div>
+                    <div class="d-flex align-items-center justify-content-between mt-2">
+                        <div class="product-price">Rs. {{ '%.2f'|format(product.price) }}</div>
+                        {% if product.stock > 0 %}<span class="stock-status">{{ product.stock }} left</span>{% endif %}
+                    </div>
+                    <div class="product-actions">
+                        <a href="{{ url_for('products.detail', slug=product.slug) }}" class="btn btn-outline-sp btn-sm">Details</a>
+                        {% if product.stock > 0 %}
+                        <a href="{{ url_for('products.detail', slug=product.slug) }}" class="btn btn-sp btn-sm flex-grow-1">Choose options <i class="bi bi-cart-plus ms-1"></i></a>
+                        {% else %}
+                        <button class="btn btn-secondary btn-sm flex-grow-1" disabled>Unavailable</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="glass-card text-center py-5">
+                <div class="display-6 mb-3">⌁</div>
+                <h3>No sneakers found</h3>
+                <p class="section-muted">Try changing your search or filters.</p>
+                <a href="{{ url_for('products.list_products') }}" class="btn btn-sp">Clear filters</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if pagination.pages > 1 %}
+    <nav class="mt-5" aria-label="Product pages">
+        <ul class="pagination justify-content-center gap-1">
+            {% for p in pagination.iter_pages() %}
+                {% if p %}
+                    <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                        <a class="page-link rounded-3" href="{{ url_for('products.list_products', page=p, q=current_q, category=current_category, brand=current_brand, size=current_size) }}">{{ p }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link rounded-3">…</span></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

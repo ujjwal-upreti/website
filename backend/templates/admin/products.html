@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Manage Products{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <h2>Products</h2>
+    <a href="{{ url_for('admin.add_product') }}" class="btn btn-dark">Add Product</a>
+</div>
+<table class="table table-striped">
+    <thead><tr><th>ID</th><th>Name</th><th>Brand</th><th>Price</th><th>Stock</th><th>Size</th><th>Active</th><th></th></tr></thead>
+    <tbody>
+        {% for p in products %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.brand.name if p.brand else '—' }}</td>
+            <td>Rs. {{ "%.2f"|format(p.price) }}</td>
+            <td>{{ p.stock }}</td>
+            <td>{{ p.size }}</td>
+            <td>{{ 'Yes' if p.is_active else 'No' }}</td>
+            <td><a href="{{ url_for('admin.edit_product', pid=p.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

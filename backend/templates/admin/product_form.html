@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{% if product %}Edit{% else %}Add{% endif %} Product{% endblock %}
+{% block content %}
+<div class="container py-5">
+<h2 class="section-title fs-2">{% if product %}Edit{% else %}Add{% endif %} Product</h2>
+<p class="section-muted">Add three product images and create selectable size/color combinations.</p>
+<form method="POST" class="col-lg-9">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mb-3"><label class="form-label">Name</label><input type="text" name="name" class="form-control" value="{{ product.name if product else '' }}" required></div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label">Price (Rs.)</label><input type="number" step="0.01" name="price" class="form-control" value="{{ product.price if product else '' }}" required></div>
+      <div class="col-md-6 mb-3"><label class="form-label">Stock per variant</label><input type="number" name="variant_stock" min="0" class="form-control" value="{{ (product.variants[0].stock if product and product.variants else 0) }}"><small class="text-muted">This creates the same starting stock for every size/color combination.</small></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label">Category</label><select name="category_id" class="form-select">{% for c in categories %}<option value="{{ c.id }}" {% if product and product.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
+      <div class="col-md-6 mb-3"><label class="form-label">Brand</label><select name="brand_id" class="form-select">{% for b in brands %}<option value="{{ b.id }}" {% if product and product.brand_id == b.id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}</select></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label">Available sizes</label><input type="text" name="sizes" class="form-control" value="{% if product and product.variants %}{{ product.variants | map(attribute='size') | unique | join(', ') }}{% else %}6, 7, 8, 9, 10, 11, 12{% endif %}"><small class="text-muted">Comma separated, e.g. 7, 8, 9, 10.</small></div>
+      <div class="col-md-6 mb-3"><label class="form-label">Available colors</label><input type="text" name="colors" class="form-control" value="{% if product and product.variants %}{{ product.variants | map(attribute='color') | unique | join(', ') }}{% else %}Black, White{% endif %}"><small class="text-muted">Comma separated, e.g. Black, White, Red.</small></div>
+    </div>
+    <div class="mb-3"><label class="form-label">Main image URL</label><input type="text" name="image_url" class="form-control" value="{{ product.image_url if product else '/static/images/products/air-max-90.jpg' }}"></div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label">Second image URL</label><input type="text" name="image_url_2" class="form-control" value="{{ product.image_url_2 if product else '' }}"></div>
+      <div class="col-md-6 mb-3"><label class="form-label">Third image URL</label><input type="text" name="image_url_3" class="form-control" value="{{ product.image_url_3 if product else '' }}"></div>
+    </div>
+    <div class="mb-3"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="4">{{ product.description if product else '' }}</textarea></div>
+    {% if product %}<div class="mb-3 form-check"><input type="checkbox" name="is_active" class="form-check-input" id="active" {% if product.is_active %}checked{% endif %}><label class="form-check-label" for="active">Active</label></div>{% endif %}
+    <button type="submit" class="btn btn-sp">Save Product</button>
+    <a href="{{ url_for('admin.manage_products') }}" class="btn btn-outline-sp">Cancel</a>
+</form>
+</div>
+{% endblock %}
